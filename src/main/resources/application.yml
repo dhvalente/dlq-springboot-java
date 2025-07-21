@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: dlq-application
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    connection-timeout: 30000
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          max-interval: 10000
+          multiplier: 2.0
+
+# Custom application properties
+rabbitmq:
+  queues:
+    expense:
+      name: expense.queue
+      dlq: expense.dlq
+      exchange: expense.exchange
+      routing-key: expense.routing.key
+      dlq-routing-key: expense.dlq.routing.key
+    income:
+      name: income.queue
+      dlq: income.dlq
+      exchange: income.exchange
+      routing-key: income.routing.key
+      dlq-routing-key: income.dlq.routing.key
+
+logging:
+  level:
+    br.com.suit: DEBUG
+    org.springframework.amqp: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
